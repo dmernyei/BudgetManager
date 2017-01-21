@@ -1,0 +1,43 @@
+/* Divs */
+
+.loginFormHolder {
+    max-width: 580px;
+    margin: 0 auto;
+}
+
+.buttonHolder {
+    text-align: center;
+}
+
+.menuHolder {
+    min-width: 150px;
+    max-width: 250px;
+    float: left;
+}
+
+.contentHolder {
+
+}
+
+
+
+/* Buttons */
+
+.btn-primary {
+    margin-right: 20px;
+}
+
+.addButton {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    border-radius: 30px;
+}
+
+
+
+/* Fonts */
+h3 {
+    margin-top: 15px;
+    margin-left: 12px;
+}
