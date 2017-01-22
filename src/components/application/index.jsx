@@ -6,7 +6,7 @@ import { observer } from 'mobx-react'
 @observer(['state'])
 export default class Application extends Component {
   render() {
-    if (this.props.state.isUserLoggedIn)
+    if (this.props.state.userState.isUserLoggedIn)
       return(<LoggedInUI />)
     else
       return(<LoginForm />)

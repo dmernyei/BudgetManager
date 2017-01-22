@@ -3,6 +3,7 @@ import DataComponent from '../data-component'
 import { observer } from 'mobx-react'
 
 
+@observer(['state'])
 export default class LoginForm extends DataComponent {
     
     userName = ""
@@ -11,15 +12,13 @@ export default class LoginForm extends DataComponent {
 
     handleSubmit(e) {
         e.preventDefault()
-        if (!this.isDataValid())
+        if (this.props.state.userState.isQueryBeingProcessed || !this.isDataValid())
             return
         
-        if (this.isLoginPressed && !this.props.state.logIn(this.userName, this.password)) {
-            // todo: incorrect username or password (másik ág elvileg nem kell, automatikusan befrissül)
-        }
-        else if (!this.isLoginPressed && !this.props.state.register(this.userName, this.password)) {
-            // username taken
-        }
+        if (this.isLoginPressed)
+            this.props.state.userState.initializeLogin(this.userName, this.password)
+        else
+            this.props.state.userState.initializeRegistration(this.userName, this.password)
     }
 
 
@@ -29,6 +28,10 @@ export default class LoginForm extends DataComponent {
 
 
     render() {
+        var errorMessage = ""
+        if (this.props.state.userState.isUserRejected)
+            errorMessage = 0 === this.props.state.userState.userAction ? "The specified user name is already registered." : "Incorect user name or password."
+
         return(
             <div className="loginFormHolder">
                 <form onSubmit={e => this.handleSubmit(e)} className="form-horizontal">
@@ -57,6 +60,7 @@ export default class LoginForm extends DataComponent {
                         <div className="form-group">
                             <div className="col-lg-10 col-lg-offset-2">
                                 <div className="buttonHolder">
+                                    <p className="text-danger">{errorMessage}</p>
                                     <button type="submit" onClick={e => this.isLoginPressed = true} className="btn btn-primary">Log in</button>
                                     <button type="submit" onClick={e => this.isLoginPressed = false} className="btn btn-default">...or register</button>
                                 </div>

@@ -7,13 +7,13 @@ export default class Menu extends Component {
     handleClick(e, menuId) {
         e.preventDefault()
         if (4 === menuId)
-            this.props.state.logOut()
+            this.props.state.userState.logOut()
         else
             this.props.state.setMenuId(menuId)
     }
 
     render() {
-        const userName = this.props.state.userName
+        const userName = this.props.state.userState.userName
         const menuId = this.props.state.menuId
         return(
             <div className="menuHolder">
