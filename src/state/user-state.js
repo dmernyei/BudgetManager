@@ -5,30 +5,16 @@ import sjcl from 'sjcl'
 
 export default class UserState {
 
-    _appState
-    
     @observable _user = null
-    @observable _userNames = []
-    @observable _userNamesAndPasswords = []
     @observable _isUserRejected = false
-    @observable _userAction = -1
+    @observable _userAction = -1            // -1: nothing, 0: registration, 1: login
 
+    _appState
     _isQueryBeingProcessed = false
-    _userToTest = {}
     
 
     constructor(appState) {
         this._appState = appState
-        
-        reaction(
-            () => this._userNames,
-            userNames => this.checkUserToRegister() 
-        )
-
-        reaction(
-            () => this._userNamesAndPasswords,
-            userNamesAndPasswords => this.checkUserToLogin() 
-        )
     }
 
 
@@ -57,8 +43,42 @@ export default class UserState {
     }
 
 
-    @action logUserIn() {
-        fetch(`http://localhost:4000/user/${this._userToTest.id}`,
+    @action checkUserToRegister(newUser, userNames) {
+        this._isUserRejected = this.isUserNameAlreadyRegistered(newUser.name, userNames)
+        this._userAction = 0
+        
+        if (!this._isUserRejected)
+            this.registerUser(newUser)
+        else
+            this._isQueryBeingProcessed = false
+    }
+
+
+    @action checkUserToLogin(userToLogin, userNamesAndPasswords) {
+        this._isUserRejected = !this.isUserNameAndPasswordCorrect(userToLogin, userNamesAndPasswords)
+        this._userAction = 1
+        
+        if (!this._isUserRejected)
+            this.logUserIn(userToLogin.id)
+        else
+            this._isQueryBeingProcessed = false
+    }
+
+
+    @action logOut() {
+        this._user = null
+    }
+
+
+    processRegistration(userName, password) {
+        this._isQueryBeingProcessed = true
+        var newUser = {}
+        newUser.name = userName
+        newUser.password = this.encryptPassword(password)
+        var userNames = []
+
+        fetch(
+        `http://localhost:4000/user?fields[user]=name`,
         {
             method: 'GET',
             headers:
@@ -69,34 +89,28 @@ export default class UserState {
         }
         )
         .then(response => response.json())
-        .then(action(json => {
-            this._appState.setMenuId(0)
-            this._user = Object.assign(json.data.attributes, {id: json.data.id})
-        }))
-        .catch(e => console.log(e))
+        .then(json => json.data.map(obj => userNames.push(obj.attributes.name)))
+        .then(() => this.checkUserToRegister(newUser, userNames))
+        .catch(e => {
+            console.log(e)
+            this._isQueryBeingProcessed = false
+        })
     }
 
 
-    @action logOut() {
-        this._user = null
-    }
-
-
-    @action checkUserToRegister() {
-        this._isUserRejected = this.isUserNameUsed()
-        this._userAction = 0
+    isUserNameAlreadyRegistered(newUserName, userNames) {
+        var i
+        const length = userNames.length
         
-        if (!this._isUserRejected)
-        this.registerUser()
-
-        this._isQueryBeingProcessed = false
+        for (i = 0; i < length; ++i) {
+            if (userNames[i] === newUserName)
+                return true
+        }
+        return false
     }
 
 
-    registerUser() {
-        var newUser = {}
-        Object.assign(newUser, this._userToTest)
-
+    registerUser(newUser) {
         newUser.id = uuid.v1()
         newUser.liquidBalance = 0
 
@@ -120,60 +134,25 @@ export default class UserState {
             },
             body: JSON.stringify(jsonData)
         })
-        .then(action(() => this._user = newUser))
-        .catch(e => console.log(e))
+        .then(action(() => {
+                this._appState.setMenuId(0)
+                this._user = newUser
+            }))
+        .then(() => this._isQueryBeingProcessed = false)
+        .catch(e => {
+            console.log(e)
+            this._isQueryBeingProcessed = false
+        })
     }
 
 
-    @action checkUserToLogin() {
-        this._isUserRejected = !this.isUserNameAndPasswordCorrect()
-        this._userAction = 1
-        
-        if (!this._isUserRejected)
-            this.logUserIn()
-
-        this._isQueryBeingProcessed = false
-    }
-
-
-    initializeLogin(userName, password) {
+    processLogin(userName, password) {
         this._isQueryBeingProcessed = true
-        this._userToTest.name = userName
-        this._userToTest.password = this.encryptPassword(password)
-        this.queryUserNamesAndPasswords()
-    }
+        var userToLogin = {}
+        userToLogin.name = userName
+        userToLogin.password = this.encryptPassword(password)
+        var userNamesAndPasswords = []
 
-
-    initializeRegistration(userName, password) {
-        this._isQueryBeingProcessed = true
-        this._userToTest.name = userName
-        this._userToTest.password = this.encryptPassword(password)
-        this.queryUserNames()
-    }
-
-
-    queryUserNames() {
-        fetch(
-        `http://localhost:4000/user?fields[user]=name`,
-        {
-            method: 'GET',
-            headers:
-            {
-                'Accept': 'application/vnd.api+json',
-                'Content-Type': 'application/vnd.api+json',
-            }
-        }
-        )
-        .then(response => response.json())
-        .then(action(json => {
-            this._userNames = []
-            json.data.map(obj => this._userNames.push(obj.attributes.name))
-        }))
-        .catch(e => console.log(e))
-    }
-
-
-    queryUserNamesAndPasswords() {
         fetch(
         `http://localhost:4000/user?fields[user]=name,password`,
         {
@@ -186,41 +165,56 @@ export default class UserState {
         }
         )
         .then(response => response.json())
-        .then(action(json => {
-            this._userNamesAndPasswords = []
+        .then(json => {
             json.data.map(obj => {
                 Object.assign(obj.attributes, {id: obj.id})
-                this._userNamesAndPasswords.push(obj.attributes)
+                userNamesAndPasswords.push(obj.attributes)
             })
-        }))
-        .catch(e => console.log(e))
+        })
+        .then(() => this.checkUserToLogin(userToLogin, userNamesAndPasswords))
+        .catch(e => {
+            console.log(e)
+            this._isQueryBeingProcessed = false
+        })
     }
 
 
-    isUserNameUsed() {
+    isUserNameAndPasswordCorrect(userToLogin, userNamesAndPasswords) {
         var i
-        const length = this._userNames.length
+        const length = userNamesAndPasswords.length
 
         for (i = 0; i < length; ++i) {
-            if (this._userNames[i] === this._userToTest.name)
-                return true
-        }
-        return false
-    }
-
-
-    isUserNameAndPasswordCorrect() {
-        var i
-        const length = this._userNamesAndPasswords.length
-
-        for (i = 0; i < length; ++i) {
-            if (this._userNamesAndPasswords[i].name === this._userToTest.name
-            && this.decryptPassword(this._userNamesAndPasswords[i].password) === this.decryptPassword(this._userToTest.password)) {
-                Object.assign(this._userToTest, {id: this._userNamesAndPasswords[i].id})
+            if (userNamesAndPasswords[i].name === userToLogin.name
+            && this.decryptPassword(userNamesAndPasswords[i].password) === this.decryptPassword(userToLogin.password)) {
+                Object.assign(userToLogin, {id: userNamesAndPasswords[i].id})
                 return true
             }
         }
         return false
+    }
+
+
+    logUserIn(userToLoginId) {
+        fetch(`http://localhost:4000/user/${userToLoginId}`,
+        {
+            method: 'GET',
+            headers:
+            {
+                'Accept': 'application/vnd.api+json',
+                'Content-Type': 'application/vnd.api+json',
+            }
+        }
+        )
+        .then(response => response.json())
+        .then(action(json => {
+            this._appState.setMenuId(0)
+            this._user = Object.assign(json.data.attributes, {id: json.data.id})
+            this._isQueryBeingProcessed = false
+        }))
+        .catch(e => {
+            console.log(e)
+            this._isQueryBeingProcessed = false
+        })
     }
 
 

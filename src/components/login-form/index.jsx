@@ -16,9 +16,9 @@ export default class LoginForm extends DataComponent {
             return
         
         if (this.isLoginPressed)
-            this.props.state.userState.initializeLogin(this.userName, this.password)
+            this.props.state.userState.processLogin(this.userName, this.password)
         else
-            this.props.state.userState.initializeRegistration(this.userName, this.password)
+            this.props.state.userState.processRegistration(this.userName, this.password)
     }
 
 
