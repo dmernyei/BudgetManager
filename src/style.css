@@ -5,10 +5,6 @@
     margin: 0 auto;
 }
 
-.buttonHolder {
-    text-align: center;
-}
-
 .menuHolder {
     min-width: 150px;
     max-width: 250px;
@@ -23,10 +19,6 @@
 
 /* Buttons */
 
-.btn-primary {
-    margin-right: 20px;
-}
-
 .addButton {
     position: fixed;
     bottom: 20px;
@@ -40,4 +32,12 @@
 h3 {
     margin-top: 15px;
     margin-left: 12px;
+}
+
+
+
+/* Other */
+
+span {
+    color: black;
 }

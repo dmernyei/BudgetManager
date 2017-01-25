@@ -59,8 +59,8 @@ export default class LoginForm extends DataComponent {
                         </div>
                         <div className="form-group">
                             <div className="col-lg-10 col-lg-offset-2">
-                                <div className="buttonHolder">
-                                    <p className="text-danger">{errorMessage}</p>
+                                <p className="text-danger">{errorMessage}</p>
+                                <div className="btn-toolbar">
                                     <button type="submit" onClick={e => this.isLoginPressed = true} className="btn btn-primary">Log in</button>
                                     <button type="submit" onClick={e => this.isLoginPressed = false} className="btn btn-default">...or register</button>
                                 </div>
