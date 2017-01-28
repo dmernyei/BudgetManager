@@ -1,31 +1,22 @@
 import { observable, computed, action, reaction } from 'mobx'
 import uuid from 'uuid'
-import UserState from './user-state'
+import ContextState from './context-state'
 
 
-export default class ListState {
+export default class ListState extends ContextState {
 
     @observable _lists = []
     @observable _listItems = []
-    @observable _contextIndex = 0
-    
-    _userState
-    _isQueryBeingProcessed = false
-    _contexts = ["list-of-lists", "new-list", "content-of-list", "editing-list", "viewing-list-item", "new-list-item"]
 
     _selectedListIndex
     _selectedListItemIndex
 
 
     constructor(userState) {
-        this._userState = userState
+        super(userState)
+        this._contexts = ["list-of-lists", "new-list", "content-of-list", "editing-list", "viewing-list-item", "new-list-item"]
     }
     
-    
-    @computed get context() {
-        return this._contexts[this._contextIndex]
-    }
-
 
     @computed get lists() {
         return this._lists
@@ -44,11 +35,6 @@ export default class ListState {
 
     get selectedListItem() {
         return 4 === this._contextIndex ? this._listItems[this._selectedListItemIndex] : null
-    }
-
-
-    @action setContextIndex(contextIndex) {
-        this._contextIndex = contextIndex
     }
 
 

@@ -1,19 +1,20 @@
 import { observable, computed, action, reaction } from 'mobx'
 import uuid from 'uuid'
 import sjcl from 'sjcl'
+import QueryProcessorState from './query-processor-state'
 
 
-export default class UserState {
+export default class UserState extends QueryProcessorState {
 
     @observable _user = null
     @observable _isUserRejected = false
     @observable _userAction = -1            // -1: nothing, 0: registration, 1: login
 
     _appState
-    _isQueryBeingProcessed = false
     
 
     constructor(appState) {
+        super()
         this._appState = appState
     }
 
@@ -38,11 +39,6 @@ export default class UserState {
 
     @computed get userAction() {
         return this._userAction
-    }
-
-
-    get isQueryBeingProcessed() {
-        return this._isQueryBeingProcessed
     }
 
 

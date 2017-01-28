@@ -1,6 +1,7 @@
 import { observable, computed, action, reaction } from 'mobx'
 import UserState from './user-state'
 import ListState from './list-state'
+import GoalState from './goal-state'
 import DialogState from './dialog-state'
 
 
@@ -8,12 +9,14 @@ export default class AppState {
   
   _userState
   _listState
+  _goalState
   _dialogState
   @observable _menuId = 0
 
   constructor() {
     this._userState = new UserState(this)
     this._listState = new ListState(this._userState)
+    this._goalState = new GoalState(this._userState)
     this._dialogState = new DialogState()
   }
 
@@ -23,6 +26,10 @@ export default class AppState {
 
   get listState() {
     return this._listState
+  }
+
+  get goalState() {
+    return this._goalState
   }
 
   get dialogState() {
@@ -40,6 +47,7 @@ export default class AppState {
   resetAllStates() {
     this.setMenuId(0)
     this._listState.resetState()
+    this._goalState.resetState()
     this._dialogState.hide()
   }
 }

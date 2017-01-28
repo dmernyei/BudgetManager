@@ -20,6 +20,7 @@ export default class LoggedInUI extends Component {
                 break
             case 2:
                 content = <Goals />
+                this.props.state.goalState.resetState()
                 break
             case 3:
                 content = <Transactions />
