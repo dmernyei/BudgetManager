@@ -11,7 +11,7 @@ export default class Application extends Component {
     const mainUI = this.props.state.userState.isUserLoggedIn ? <LoggedInUI /> : <LoginForm />
 
     return (
-      <div>
+      <div className="application">
         {mainUI}
         <Dialog />
       </div>

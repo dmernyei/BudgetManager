@@ -12,26 +12,27 @@ export default class LoggedInUI extends Component {
     
     render() {
         const menuId = this.props.state.menuId
-        var component
+        var content
         switch(menuId) {
             case 1:
-                component = <Lists />
+                this.props.state.listState.resetState()
+                content = <Lists />
                 break
             case 2:
-                component = <Goals />
+                content = <Goals />
                 break
             case 3:
-                component = <Transactions />
+                content = <Transactions />
                 break
             default:
-                component = <Dashboard />
+                content = <Dashboard />
                 break
         }
 
         return(
             <div>
                 <Menu />
-                {component}
+                {content}
             </div>
         )
     }

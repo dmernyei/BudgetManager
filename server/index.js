@@ -11,7 +11,7 @@ const recordTypes = {
     user: {
         name: String,
         password: String,
-        liquidBalance: Number,
+        liquidbalance: Number,
         lists: [ Array('list'), 'user' ],
         goals: [ Array('goal'), 'user' ],
         transactions: [ Array('transaction'), 'user' ],
@@ -22,6 +22,7 @@ const recordTypes = {
         user: [ 'user', 'lists' ],
     },
     listItem: {
+        isdone: Boolean,
         name: String,
         priority: Number,
         description: String,
@@ -29,9 +30,9 @@ const recordTypes = {
     },
     goal: {
         name: String,
-        goalAmount: Number,
-        allocatedAmount: Number,
-        deadLine: Date,
+        goalamount: Number,
+        allocatedamount: Number,
+        deadline: Date,
         priority: Number,
         description: String,
         user: [ 'user', 'goals' ],

@@ -22,9 +22,12 @@ export default class UserState {
         return this._user !== null
     }
 
+    get userId() {
+        return this._user.id
+    }
 
-    @computed get userName() {
-        return this.isUserLoggedIn ? this._user.name : null
+    get userName() {
+        return this._user.name
     }
 
 
@@ -71,6 +74,9 @@ export default class UserState {
 
 
     processRegistration(userName, password) {
+        if (this._isQueryBeingProcessed)
+            return
+        
         this._isQueryBeingProcessed = true
         var newUser = {}
         newUser.name = userName
@@ -112,7 +118,7 @@ export default class UserState {
 
     registerUser(newUser) {
         newUser.id = uuid.v1()
-        newUser.liquidBalance = 0
+        newUser.liquidbalance = 0
 
         const jsonData = {
             data: {
@@ -121,7 +127,7 @@ export default class UserState {
                 attributes: {
                     name: newUser.name,
                     password: newUser.password,
-                    liquidBalance: newUser.liquidBalance,
+                    liquidbalance: newUser.liquidbalance,
                 }
             }
         }
@@ -135,8 +141,8 @@ export default class UserState {
             body: JSON.stringify(jsonData)
         })
         .then(action(() => {
-                this._appState.setMenuId(0)
                 this._user = newUser
+                this._appState.resetAllStates()
             }))
         .then(() => this._isQueryBeingProcessed = false)
         .catch(e => {
@@ -147,6 +153,9 @@ export default class UserState {
 
 
     processLogin(userName, password) {
+        if (this._isQueryBeingProcessed)
+            return
+        
         this._isQueryBeingProcessed = true
         var userToLogin = {}
         userToLogin.name = userName
@@ -162,8 +171,7 @@ export default class UserState {
                 'Accept': 'application/vnd.api+json',
                 'Content-Type': 'application/vnd.api+json',
             }
-        }
-        )
+        })
         .then(response => response.json())
         .then(json => {
             json.data.map(obj => {
@@ -207,9 +215,9 @@ export default class UserState {
         )
         .then(response => response.json())
         .then(action(json => {
-            this._appState.setMenuId(0)
             this._user = Object.assign(json.data.attributes, {id: json.data.id})
             this._isQueryBeingProcessed = false
+            this._appState.resetAllStates()
         }))
         .catch(e => {
             console.log(e)

@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
+import { action } from 'mobx'
 
 
 export default class DataComponent extends Component {
-  assignData(key, value) {
+  @action assignData(key, value) {
       this[key] = value;
   }
 }

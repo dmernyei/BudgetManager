@@ -12,7 +12,7 @@ export default class LoginForm extends DataComponent {
 
     handleSubmit(e) {
         e.preventDefault()
-        if (this.props.state.userState.isQueryBeingProcessed || !this.isDataValid())
+        if (!this.isDataValid())
             return
         
         if (this.isLoginPressed)
@@ -41,7 +41,7 @@ export default class LoginForm extends DataComponent {
                             <label htmlFor="userName" className="col-lg-2 control-label">User name</label>
                             <div className="col-lg-10">
                                 <input
-                                    type="text" className="form-control" id="inputUserName" placeholder="User name"
+                                    type="text" className="form-control" id="inputUserName"
                                     onChange={e => this.assignData("userName", e.target.value)}
                                     required
                                 />
@@ -51,7 +51,7 @@ export default class LoginForm extends DataComponent {
                             <label htmlFor="inputPassword" className="col-lg-2 control-label">Password</label>
                             <div className="col-lg-10">
                                 <input
-                                    type="password" className="form-control" id="inputPassword" placeholder="Password"
+                                    type="password" className="form-control" id="inputPassword"
                                     onChange={e => this.assignData("password", e.target.value)}
                                     required
                                 />
