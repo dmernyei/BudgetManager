@@ -46,61 +46,64 @@
     padding-top: 50px;
 }
 
+.rootPanel {
+    width: 80%;
+    float: right;
+}
+
 .listItemPanelDetailsHolder, .listPanelDetailsHolder {
     height: 30px;
 }
 
 .listPanelDetails {
-    width: 80%;
-    float: right;
     padding-left: 10px;
-    padding-right: 10px;
+    padding-right: 20px;
 }
 
 .listItemPanelCheckBox {
-    float: right;
+    float: left;
     text-align: left;
     padding-left: 10px;
     width: 5%;
 }
 
 .listItemPanelName {
-    float: right;
+    float: left;
     text-align: left;
-    width: 25%;
+    width: 35%;
 }
 
 .listItemPanelPriority {
-    float: right;
+    float: left;
     text-align: center;
     width: 30%;
 }
 
 .listItemPanelDetails {
-    float: right;
+    float: left;
     text-align: right;
     padding-right: 20px;
-    width: 20%;
+    width: 30%;
 }
 
 .listItemPanelNameDeletable {
-    float: right;
+    float: left;
     text-align: left;
     padding-left: 10px;
-    width: 25%;
+    width: 35%;
 }
 
 .listItemPanelPriorityDeletable {
-    float: right;
+    float: left;
     text-align: center;
     width: 30%;
 }
 
 .listItemPanelDelete {
-    float: right;
+    float: left;
     text-align: right;
     padding-right: 20px;
-    width: 25%;
+    width: 35%;
 }
 
 
@@ -108,6 +111,8 @@
 /* Buttons */
 
 .addButton {
+    margin-left: 10px;
+    margin-bottom: 20px;
     padding-top: 0px;
     padding-bottom: 0px;
     padding-left: 8px;
@@ -120,6 +125,8 @@
 
 .deleteLinkBold {
     font-weight: bold;
+    padding-left: 10px;
+    padding-bottom: 20px;
 }
 
 

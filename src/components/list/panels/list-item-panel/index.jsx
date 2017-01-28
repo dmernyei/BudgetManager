@@ -61,23 +61,23 @@ export default class ListItemPanel extends DataComponent {
 
     createView(priority) {
         return (
-            <div>
+            <div className="rootPanel">
                 <div className="listItemPanelDetailsHolder">
-                    <div className="listItemPanelDetails">
-                        <a href="" onClick={e => this.onDetailsClicked(e)}>Details</a>
-                    </div>
-                    <div className="listItemPanelPriority">
-                        {priority}
-                    </div>
-                    <div className="listItemPanelName">
-                        {this.props.listItem.name}
-                    </div>
                     <div className="listItemPanelCheckBox">
                         <input
                             type="checkbox"
                             checked={this.isdone}
                             onChange={e => this.onCheckboxClicked(e)}
                         />
+                    </div>
+                    <div className="listItemPanelName">
+                        {this.props.listItem.name}
+                    </div>
+                    <div className="listItemPanelPriority">
+                        {priority}
+                    </div>
+                    <div className="listItemPanelDetails">
+                        <a href="" onClick={e => this.onDetailsClicked(e)}>Details</a>
                     </div>
                 </div>
                 <hr />
@@ -88,16 +88,16 @@ export default class ListItemPanel extends DataComponent {
 
     createDeletableView(priority) {
         return (
-            <div>
+            <div className="rootPanel">
                 <div className="listItemPanelDetailsHolder">
-                    <div className="listItemPanelDelete">
-                        <a className="deleteLink" href="" onClick={e => this.onDeleteClicked(e)}>Delete</a>
+                    <div className="listItemPanelNameDeletable">
+                        {this.props.listItem.name}
                     </div>
                     <div className="listItemPanelPriorityDeletable">
                         {priority}
                     </div>
-                    <div className="listItemPanelNameDeletable">
-                        {this.props.listItem.name}
+                    <div className="listItemPanelDelete">
+                        <a className="deleteLink" href="" onClick={e => this.onDeleteClicked(e)}>Delete</a>
                     </div>
                 </div>
                 <hr />

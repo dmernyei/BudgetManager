@@ -6,7 +6,7 @@ import { observer } from 'mobx-react'
 export default class ListPanel extends Component {
     render() {
         return (
-            <div onClick={e => this.props.state.listState.onListSelected(this.props.listId)}>
+            <div className="rootPanel" onClick={e => this.props.state.listState.onListSelected(this.props.listId)}>
                 <div className="listPanelDetailsHolder">
                     <div className="listPanelDetails">
                         <h4>{this.props.listName}</h4>

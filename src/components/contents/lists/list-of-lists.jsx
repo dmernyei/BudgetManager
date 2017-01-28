@@ -21,7 +21,9 @@ export default class ListOfLists extends Component {
             <div>
                 <Header centerActionData={centerActionData} />
                 <List panels={panels} />
-                <button className="btn btn-danger addButton" onClick={e => this.props.state.listState.setContextIndex(1)}><h2>+</h2></button>
+                <div className="rootPanel">
+                    <button className="btn btn-danger addButton" onClick={e => this.props.state.listState.setContextIndex(1)}><h2>+</h2></button>
+                </div>
             </div>
         )
     }

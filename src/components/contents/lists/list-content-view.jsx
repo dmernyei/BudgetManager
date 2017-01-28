@@ -80,7 +80,9 @@ export default class ListContentView extends DataComponent {
             <div>
                 <Header leftActionData={leftActionData} centerActionData={centerActionData} rightActionData={rightActionData} />
                 <List panels={panels} />
-                <button className="btn btn-danger addButton" onClick={e => this.props.state.listState.setContextIndex(5)}><h2>+</h2></button>
+                <div className="rootPanel">
+                    <button className="btn btn-danger addButton" onClick={e => this.props.state.listState.setContextIndex(5)}><h2>+</h2></button>
+                </div>
             </div>
         )
     }
@@ -110,7 +112,9 @@ export default class ListContentView extends DataComponent {
             <div>
                 <Header centerActionData={centerActionData} rightActionData={rightActionData} />
                 <List panels={panels} />
-                <a className="deleteLinkBold" href="" onClick={e => this.onDeleteButtonPressed(e)}>Delete list</a>
+                <div className="rootPanel">
+                    <a className="deleteLinkBold" href="" onClick={e => this.onDeleteButtonPressed(e)}>Delete list</a>
+                </div>
             </div>
         )
     }
