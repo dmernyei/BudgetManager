@@ -24,6 +24,7 @@ export default class LoggedInUI extends Component {
                 break
             case 3:
                 content = <Transactions />
+                this.props.state.transactionState.resetState()
                 break
             default:
                 content = <Dashboard />
