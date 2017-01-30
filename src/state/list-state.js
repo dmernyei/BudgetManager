@@ -51,7 +51,7 @@ export default class ListState extends ContextState {
             this._isQueryBeingProcessed = true
         
         fetch(
-        `http://localhost:4000/list?filter[user]=${this._userState.userId}`,
+        `http://localhost:4000/list?filter[user]=${this.encodeIdToURL(this._userState.userId)}`,
         {
             method: 'GET',
             headers:
@@ -116,7 +116,7 @@ export default class ListState extends ContextState {
     }
 
 
-    onListSelected(listId) {
+    selectList(listId) {
         if (this._isQueryBeingProcessed)
             return
         
@@ -128,8 +128,7 @@ export default class ListState extends ContextState {
             return
         }
         
-        fetch(
-        `http://localhost:4000/listItem?filter[list]=${listId}`,
+        fetch(`http://localhost:4000/listItem?filter[list]=${this.encodeIdToURL(listId)}`,
         {
             method: 'GET',
             headers:
@@ -166,7 +165,7 @@ export default class ListState extends ContextState {
     }
 
 
-    onListItemSelected(listItemId) {
+    selectListItem(listItemId) {
         this.setSelectedListItemIndex(listItemId)
 
         if (-1 === this._selectedListItemIndex)
@@ -251,7 +250,7 @@ export default class ListState extends ContextState {
             }
         }
 
-        fetch(`http://localhost:4000/listItem/${listItem.id}`, {
+        fetch(`http://localhost:4000/listItem/${this.encodeIdToURL(listItem.id)}`, {
             method: 'PATCH',
             headers: {
                 'Accept': 'application/vnd.api+json',
@@ -288,7 +287,7 @@ export default class ListState extends ContextState {
             }
         }
 
-        fetch(`http://localhost:4000/listItem/${listItem.id}`, {
+        fetch(`http://localhost:4000/listItem/${this.encodeIdToURL(listItem.id)}`, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/vnd.api+json',
@@ -342,7 +341,7 @@ export default class ListState extends ContextState {
             }
         }
 
-        fetch(`http://localhost:4000/list/${selectedlist.id}`, {
+        fetch(`http://localhost:4000/list/${this.encodeIdToURL(selectedlist.id)}`, {
             method: 'PATCH',
             headers: {
                 'Accept': 'application/vnd.api+json',
@@ -370,7 +369,7 @@ export default class ListState extends ContextState {
 
         this._listItems.forEach(listItem => this.deleteListItem(listItem, true))
 
-        fetch(`http://localhost:4000/list/${this._lists[this._selectedListIndex].id}`, {
+        fetch(`http://localhost:4000/list/${this.encodeIdToURL(this._lists[this._selectedListIndex].id)}`, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/vnd.api+json',

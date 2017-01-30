@@ -12,7 +12,7 @@ export default class Dashboard extends Component {
         return(
             <div>
                 <p>dashboard</p>
-                <button onClick={e => this.clicked()} type='button'>Delete</button>
+                liquid balance: {this.props.state.userState.userLiquidBalance}
             </div>
         )
     }

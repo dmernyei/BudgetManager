@@ -3,7 +3,7 @@ import { observable, action } from 'mobx'
 import { observer } from 'mobx-react'
 import DataComponent from '../../data-component'
 import List from '../../list'
-import ListItemPanel from '../../list/panels/list-item-panel'
+import ListItemPanel from './panels/list-item-panel'
 import Header from '../../header'
 
 
@@ -34,7 +34,7 @@ export default class ListContentView extends DataComponent {
 
     onDeleteButtonPressed(e) {
         e.preventDefault()
-        this.props.state.dialogState.show(() => this.props.state.listState.deleteSelectedList(), "You will not be able to restore this list.", "Delete", "Cancel")
+        this.props.state.dialogState.showQuestion(() => this.props.state.listState.deleteSelectedList(), "Are you sure?", "You will not be able to restore this list.", "Delete", "Cancel")
     }
 
 
@@ -113,7 +113,7 @@ export default class ListContentView extends DataComponent {
                 <Header centerActionData={centerActionData} rightActionData={rightActionData} />
                 <List panels={panels} />
                 <div className="rootPanel">
-                    <a className="deleteLinkBold" href="" onClick={e => this.onDeleteButtonPressed(e)}>Delete list</a>
+                    <a className="deleteLinkEndOfList" href="" onClick={e => this.onDeleteButtonPressed(e)}>Delete list</a>
                 </div>
             </div>
         )

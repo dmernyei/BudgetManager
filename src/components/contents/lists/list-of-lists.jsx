@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { observer } from 'mobx-react'
 import List from '../../list'
-import ListPanel from '../../list/panels/list-panel'
+import ListPanel from './panels/list-panel'
 import Header from '../../header'
 
 

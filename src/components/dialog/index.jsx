@@ -14,6 +14,30 @@ import {
 export default class Dialog extends Component {
 
     render() {
+        var buttons = []
+        
+        if (this.props.state.dialogState.isQuestion) {
+            buttons.push(
+                <button
+                    key="0"
+                    className='btn btn-default'
+                    onClick={e => this.props.state.dialogState.hide()}
+                >
+                    {this.props.state.dialogState.cancelLabel}
+                </button>
+            )
+        }
+            
+        buttons.push(
+            <button
+                key="1"
+                className='btn btn-primary'
+                onClick={this.props.state.dialogState.isQuestion ? e => this.props.state.dialogState.okFunction() : e => this.props.state.dialogState.hide()}
+            >
+                {this.props.state.dialogState.okLabel}
+            </button>
+        )
+
         return (
             <Modal
                 isOpen={this.props.state.dialogState.isVisible}
@@ -51,8 +75,7 @@ export default class Dialog extends Component {
                     <p>{this.props.state.dialogState.text}</p>
                 </ModalBody>
                 <ModalFooter>
-                    <button className='btn btn-default' onClick={e => this.props.state.dialogState.hide()}>{this.props.state.dialogState.cancelLabel}</button>
-                    <button className='btn btn-primary' onClick={e => this.props.state.dialogState.okFunction()}>{this.props.state.dialogState.okLabel}</button>
+                    {buttons}
                 </ModalFooter>
             </Modal>
         )

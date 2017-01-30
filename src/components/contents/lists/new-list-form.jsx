@@ -50,12 +50,12 @@ export default class NewListForm extends DataComponent {
                 <form onSubmit={e => this.onSubmit(e)} className="form-horizontal">
                     <fieldset>
                         <div className="col-lg-10">
-                                <label className="control-label" htmlFor="inputName">List name (required)</label>
-                                <input
-                                    type="text" className="form-control" id="inputName"
-                                    onChange={e => this.assignData("name", e.target.value)}
-                                    required
-                                />
+                            <label className="control-label" htmlFor="inputName">List name (required)</label>
+                            <input
+                                type="text" className="form-control" id="inputName"
+                                onChange={e => this.assignData("name", e.target.value)}
+                                required
+                            />
                         </div>
                     </fieldset>
                 </form>

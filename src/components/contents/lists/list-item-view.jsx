@@ -93,13 +93,13 @@ export default class ListItemView extends DataComponent {
                 <form onSubmit={e => this.onSubmit(e)} className="form-horizontal">
                     <fieldset>
                         <div className="col-lg-10">
-                                <label className="control-label" htmlFor="inputName">List item name (required)</label>
-                                <input
-                                    type="text" className="form-control" id="inputName"
-                                    value={this.name}
-                                    onChange={e => this.assignData("name", e.target.value)}
-                                    required
-                                />
+                            <label className="control-label" htmlFor="inputName">List item name (required)</label>
+                            <input
+                                type="text" className="form-control" id="inputName"
+                                value={this.name}
+                                onChange={e => this.assignData("name", e.target.value)}
+                                required
+                            />
                         </div>
                         <div className="col-lg-10">
                             <label htmlFor="priority" className="control-label">Priority</label>

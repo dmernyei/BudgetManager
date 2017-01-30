@@ -23,12 +23,19 @@ export default class UserState extends QueryProcessorState {
         return this._user !== null
     }
 
+
     get userId() {
         return this._user.id
     }
 
+
     get userName() {
         return this._user.name
+    }
+
+
+    get userLiquidBalance() {
+        return this._user.liquidbalance
     }
 
 
@@ -199,7 +206,7 @@ export default class UserState extends QueryProcessorState {
 
 
     logUserIn(userToLoginId) {
-        fetch(`http://localhost:4000/user/${userToLoginId}`,
+        fetch(`http://localhost:4000/user/${this.encodeIdToURL(userToLoginId)}`,
         {
             method: 'GET',
             headers:
@@ -229,5 +236,43 @@ export default class UserState extends QueryProcessorState {
 
     decryptPassword(encryptedPassword) {
         return sjcl.decrypt("password", encryptedPassword)
+    }
+
+
+    updateUserLiquidBalance(newLiquidBalance) {
+        if (this._isQueryBeingProcessed)
+            return
+        
+        this._isQueryBeingProcessed = true
+
+        const jsonData = {
+            data: {
+                type: 'user',
+                id: this._user.id,
+                attributes: {
+                    name: this._user.name,
+                    password: this._user.password,
+                    liquidbalance: newLiquidBalance,
+                    lists: this._user.lists,
+                    goals: this._user.goals,
+                    transactions: this._user.transactions
+                }
+            }
+        }
+
+        fetch(`http://localhost:4000/user/${this.encodeIdToURL(this._user.id)}`, {
+            method: 'PATCH',
+            headers: {
+                'Accept': 'application/vnd.api+json',
+                'Content-Type': 'application/vnd.api+json',
+            },
+            body: JSON.stringify(jsonData)
+        })
+        .then(action(() => this._user.liquidbalance = newLiquidBalance))
+        .then(() => this._isQueryBeingProcessed = false)
+        .catch(e => {
+            console.log(e)
+            this._isQueryBeingProcessed = false
+        })
     }
 }

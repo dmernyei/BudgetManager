@@ -25,7 +25,7 @@ export default class ListItemPanel extends DataComponent {
 
     onDetailsClicked(e) {
         e.preventDefault()
-        this.props.state.listState.onListItemSelected(this.props.listItem.id)
+        this.props.state.listState.selectListItem(this.props.listItem.id)
     }
     
 
@@ -62,7 +62,7 @@ export default class ListItemPanel extends DataComponent {
     createView(priority) {
         return (
             <div className="rootPanel">
-                <div className="listItemPanelDetailsHolder">
+                <div className="panelDetailsHolder">
                     <div className="listItemPanelCheckBox">
                         <input
                             type="checkbox"
@@ -89,7 +89,7 @@ export default class ListItemPanel extends DataComponent {
     createDeletableView(priority) {
         return (
             <div className="rootPanel">
-                <div className="listItemPanelDetailsHolder">
+                <div className="panelDetailsHolder">
                     <div className="listItemPanelNameDeletable">
                         {this.props.listItem.name}
                     </div>
