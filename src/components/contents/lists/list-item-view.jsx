@@ -61,7 +61,11 @@ export default class ListItemView extends DataComponent {
 
 
     isDataValid() {
-        return "" !== this.name
+        if ("" === this.name) {
+            this.props.state.dialogState.showInfo("Error", "Please fill in the list item name field.", "Ok")
+            return false
+        }
+        return true
     }
 
 

@@ -18,7 +18,11 @@ export default class NewListForm extends DataComponent {
 
 
     isDataValid() {
-        return "" !== this.name
+        if ("" === this.name) {
+            this.props.state.dialogState.showInfo("Error", "Please fill in the list name field.", "Ok")
+            return false
+        }
+        return true
     }
 
 
