@@ -265,4 +265,25 @@ export default class GoalState extends ContextState {
             this._isQueryBeingProcessed = false
         })
     }
+
+
+    deleteUserGoals() {
+        if (this._isQueryBeingProcessed)
+            return
+        
+        this._isQueryBeingProcessed = true
+        this._goals.forEach(goal => this.deleteGoal(goal.id))
+        this._isQueryBeingProcessed = false
+    }
+
+
+    deleteGoal(goalId) {
+        fetch(`http://localhost:4000/goal/${this.encodeIdToURL(goalId)}`, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/vnd.api+json',
+            }
+        })
+        .catch(e => console.log(e))
+    }
 }

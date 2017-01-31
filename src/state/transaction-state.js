@@ -27,9 +27,10 @@ export default class TransactionState extends ContextState {
 
     resetState() {
         this.setContextIndex(0)
+        this.queryTransactions()
     }
 
-
+    
     queryTransactions() {
         if (this._isQueryBeingProcessed)
             return
@@ -124,5 +125,26 @@ export default class TransactionState extends ContextState {
             console.log(e)
             this._isQueryBeingProcessed = false
         })
+    }
+
+
+    deleteUserTransactions() {
+        if (this._isQueryBeingProcessed)
+            return
+        
+        this._isQueryBeingProcessed = true
+        this._transactions.forEach(transaction => this.deleteTransaction(transaction.id))
+        this._isQueryBeingProcessed = false
+    }
+
+
+    deleteTransaction(transactionId) {
+        fetch(`http://localhost:4000/transaction/${this.encodeIdToURL(transactionId)}`, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/vnd.api+json',
+            }
+        })
+        .catch(e => console.log(e))
     }
 }

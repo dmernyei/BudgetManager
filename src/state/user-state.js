@@ -7,9 +7,10 @@ import QueryProcessorState from './query-processor-state'
 export default class UserState extends QueryProcessorState {
 
     @observable _user = null
-    @observable _isUserRejected = false
-    @observable _userAction = -1            // -1: nothing, 0: registration, 1: login
-
+    
+    @observable _userRejectionIndex = -1
+    _userRejectionMessages = ["The specified user name is already registered.", "Incorrect user name or password.", "The current password is incorrect."]
+    
     _appState
     
 
@@ -40,39 +41,59 @@ export default class UserState extends QueryProcessorState {
 
 
     @computed get isUserRejected() {
-        return this._isUserRejected
+        return -1 !== this._userRejectionIndex
     }
 
 
-    @computed get userAction() {
-        return this._userAction
+    @computed get userRejectionMessage() {
+        return this._userRejectionMessages[this._userRejectionIndex]
     }
 
 
-    @action checkUserToRegister(newUser, userNames) {
-        this._isUserRejected = this.isUserNameAlreadyRegistered(newUser.name, userNames)
-        this._userAction = 0
-        
-        if (!this._isUserRejected)
-            this.registerUser(newUser)
-        else
-            this._isQueryBeingProcessed = false
+    @action setUserRejectionIndex(userRejectionIndex) {
+        this._userRejectionIndex = userRejectionIndex
     }
 
-
-    @action checkUserToLogin(userToLogin, userNamesAndPasswords) {
-        this._isUserRejected = !this.isUserNameAndPasswordCorrect(userToLogin, userNamesAndPasswords)
-        this._userAction = 1
-        
-        if (!this._isUserRejected)
-            this.logUserIn(userToLogin.id)
-        else
-            this._isQueryBeingProcessed = false
-    }
-
-
+    
     @action logOut() {
+        this.setUserRejectionIndex(-1)
         this._user = null
+    }
+
+
+    checkUserToRegister(newUser, userNames) {
+        if (this.isUserNameAlreadyRegistered(newUser.name, userNames)) {
+            this.setUserRejectionIndex(0)
+            this._isQueryBeingProcessed = false
+        }
+        else {
+            this.setUserRejectionIndex(-1)
+            this.registerUser(newUser)
+        }
+    }
+
+
+    checkUserToLogin(userToLogin, userNamesAndPasswords) {
+        if (!this.isUserNameAndPasswordCorrect(userToLogin, userNamesAndPasswords)) {
+            this.setUserRejectionIndex(1)
+            this._isQueryBeingProcessed = false
+        }
+        else {
+            this.setUserRejectionIndex(-1)
+            this.logUserIn(userToLogin.id)
+        }
+    }
+
+
+    checkUserToUpdateUserName(newUserData, userNames) {
+        if (this.isUserNameAlreadyRegistered(newUserData.name, userNames)) {
+            this.setUserRejectionIndex(0)
+            this._isQueryBeingProcessed = false
+        }
+        else {
+            this.setUserRejectionIndex(-1)
+            this.updateUserCredentials(newUserData)
+        }
     }
 
 
@@ -86,8 +107,7 @@ export default class UserState extends QueryProcessorState {
         newUser.password = this.encryptPassword(password)
         var userNames = []
 
-        fetch(
-        `http://localhost:4000/user?fields[user]=name`,
+        fetch(`http://localhost:4000/user?fields[user]=name`,
         {
             method: 'GET',
             headers:
@@ -274,5 +294,117 @@ export default class UserState extends QueryProcessorState {
             console.log(e)
             this._isQueryBeingProcessed = false
         })
+    }
+
+
+    processUpdateUserCredentials(newUserName, currentPassword, newPassword) {
+        if (this._isQueryBeingProcessed)
+            return
+        
+        this._isQueryBeingProcessed = true
+
+        if (this.decryptPassword(this._user.password) !== currentPassword) {
+            this.setUserRejectionIndex(2)
+            this._isQueryBeingProcessed = false
+            return
+        }
+        else {
+            this.setUserRejectionIndex(-1)
+        }
+
+        var newUserData = {}
+        Object.assign(newUserData, this._user)
+
+        if ("" !== newPassword)
+            newUserData.password = this.encryptPassword(newPassword)
+
+        if ("" !== newUserName) {
+            newUserData.name = newUserName
+            var userNames = []
+
+            fetch(`http://localhost:4000/user?fields[user]=name`,
+            {
+                method: 'GET',
+                headers:
+                {
+                    'Accept': 'application/vnd.api+json',
+                    'Content-Type': 'application/vnd.api+json',
+                }
+            }
+            )
+            .then(response => response.json())
+            .then(json => json.data.map(obj => userNames.push(obj.attributes.name)))
+            .then(() => this.checkUserToUpdateUserName(newUserData, userNames))
+            .catch(e => {
+                console.log(e)
+                this._isQueryBeingProcessed = false
+            })
+        }
+        else {
+            this.updateUserCredentials(newUserData)
+        }
+    }
+
+
+    updateUserCredentials(newUserData) {
+        const jsonData = {
+            data: {
+                type: 'user',
+                id: newUserData.id,
+                attributes: {
+                    name: newUserData.name,
+                    password: newUserData.password,
+                    liquidbalance: newUserData.liquidbalance,
+                    lists: newUserData.lists,
+                    goals: newUserData.goals,
+                    transactions: newUserData.transactions
+                }
+            }
+        }
+
+        fetch(`http://localhost:4000/user/${this.encodeIdToURL(newUserData.id)}`, {
+            method: 'PATCH',
+            headers: {
+                'Accept': 'application/vnd.api+json',
+                'Content-Type': 'application/vnd.api+json',
+            },
+            body: JSON.stringify(jsonData)
+        })
+        .then(action(() => {
+            this._user = newUserData
+            this._appState.setMenuId(0)
+        }))
+        .then(() => this._isQueryBeingProcessed = false)
+        .catch(e => {
+            console.log(e)
+            this._isQueryBeingProcessed = false
+        })
+    }
+
+
+    processDeleteUser() {
+        if (this._isQueryBeingProcessed)
+            return
+        
+        this._isQueryBeingProcessed = true
+
+        this._appState.transactionState.deleteUserTransactions()
+        this._appState.goalState.deleteUserGoals()
+        this._appState.listState.deleteUserLists()
+        this.deleteUser()
+        this._isQueryBeingProcessed = false
+
+        this.logOut()
+    }
+
+
+    deleteUser() {
+        fetch(`http://localhost:4000/user/${this.encodeIdToURL(this._user.id)}`, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/vnd.api+json',
+            }
+        })
+        .catch(e => console.log(e))
     }
 }

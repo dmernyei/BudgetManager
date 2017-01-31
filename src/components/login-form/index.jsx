@@ -30,7 +30,7 @@ export default class LoginForm extends DataComponent {
     render() {
         var errorMessage = ""
         if (this.props.state.userState.isUserRejected)
-            errorMessage = 0 === this.props.state.userState.userAction ? "The specified user name is already registered." : "Incorect user name or password."
+            errorMessage = this.props.state.userState.userRejectionMessage
 
         return(
             <div className="loginFormHolder">

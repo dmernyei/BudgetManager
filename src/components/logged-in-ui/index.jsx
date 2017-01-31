@@ -5,6 +5,7 @@ import Dashboard from '../contents/dashboard'
 import Goals from '../contents/goals'
 import Lists from '../contents/lists'
 import Transactions from '../contents/transactions'
+import AccountView from '../contents/account'
 
 
 @observer(['state'])
@@ -25,6 +26,10 @@ export default class LoggedInUI extends Component {
             case 3:
                 content = <Transactions />
                 this.props.state.transactionState.resetState()
+                break
+            case 4:
+                this.props.state.userState.setUserRejectionIndex(-1)
+                content = <AccountView />
                 break
             default:
                 content = <Dashboard />

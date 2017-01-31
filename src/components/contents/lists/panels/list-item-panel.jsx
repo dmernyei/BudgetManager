@@ -31,7 +31,7 @@ export default class ListItemPanel extends DataComponent {
 
     onDeleteClicked(e) {
         e.preventDefault()
-        this.props.state.listState.deleteListItem(this.props.listItem, false)
+        this.props.state.listState.deleteListItem(this.props.listItem.id, false)
     }
 
 

@@ -50,8 +50,7 @@ export default class ListState extends ContextState {
         else
             this._isQueryBeingProcessed = true
         
-        fetch(
-        `http://localhost:4000/list?filter[user]=${this.encodeIdToURL(this._userState.userId)}`,
+        fetch(`http://localhost:4000/list?filter[user]=${this.encodeIdToURL(this._userState.userId)}`,
         {
             method: 'GET',
             headers:
@@ -272,14 +271,14 @@ export default class ListState extends ContextState {
     }
 
 
-    deleteListItem(listItem, sendQueryOnly) {
+    deleteListItem(listItemId, sendQueryOnly) {
         if(this._isQueryBeingProcessed && !sendQueryOnly)
             return
         
         if(!sendQueryOnly) {
             this._isQueryBeingProcessed = true
 
-            var indexOfListItemToDelete = this.findIndexOfListItemToDelete(listItem.id)
+            var indexOfListItemToDelete = this.findIndexOfListItemToDelete(listItemId)
             if (-1 === indexOfListItemToDelete) {
                 console.log("Could not find list item to delete.")
                 this._isQueryBeingProcessed = false
@@ -287,7 +286,7 @@ export default class ListState extends ContextState {
             }
         }
 
-        fetch(`http://localhost:4000/listItem/${this.encodeIdToURL(listItem.id)}`, {
+        fetch(`http://localhost:4000/listItem/${this.encodeIdToURL(listItemId)}`, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/vnd.api+json',
@@ -367,7 +366,7 @@ export default class ListState extends ContextState {
         
         this._isQueryBeingProcessed = true
 
-        this._listItems.forEach(listItem => this.deleteListItem(listItem, true))
+        this._listItems.forEach(listItem => this.deleteListItem(listItem.id, true))
 
         fetch(`http://localhost:4000/list/${this.encodeIdToURL(this._lists[this._selectedListIndex].id)}`, {
             method: 'DELETE',
@@ -384,5 +383,66 @@ export default class ListState extends ContextState {
             console.log(e)
             this._isQueryBeingProcessed = false
         })
+    }
+
+
+    deleteUserLists() {
+        if (this._isQueryBeingProcessed)
+            return
+
+        this._isQueryBeingProcessed = true
+        
+        this.processDeleteUserListItems()
+        this._lists.forEach(list => this.deleteList(list.id))
+
+        this._isQueryBeingProcessed = false        
+    }
+
+
+    deleteList(listId) {
+        fetch(`http://localhost:4000/list/${this.encodeIdToURL(listId)}`, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/vnd.api+json',
+            }
+        })
+        .catch(e => console.log(e))
+    }
+
+
+    processDeleteUserListItems() {
+        const listIdListString = this.generateListIdListString()
+        var listItemIds = []
+
+        fetch(`http://localhost:4000/listItem?fields[listItem]=name&filter[list]=${listIdListString}`,
+        {
+            method: 'GET',
+            headers:
+            {
+                'Accept': 'application/vnd.api+json',
+                'Content-Type': 'application/vnd.api+json',
+            }
+        })
+        .then(response => response.json())
+        .then(json => json.data.forEach(obj => listItemIds.push(obj.id)))
+        .then(() => listItemIds.forEach(listItemId => this.deleteListItem(listItemId, true)))
+        .catch(e => console.log(e))
+    }
+
+
+    generateListIdListString() {
+        var listIds = []
+        this._lists.forEach(list => listIds.push(this.encodeIdToURL(list.id)))
+
+        var listIdListString = ""
+        var length = listIds.length
+        var i
+        for (i = 0; i < length; ++i) {
+            listIdListString += String(listIds[i])
+            if (i < length - 1)
+                listIdListString += ','
+        }
+
+        return listIdListString
     }
 }
