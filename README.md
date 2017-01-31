@@ -16,7 +16,7 @@ How to run:
   2. cmd: npm run server (server will listen at http://localhost:4000)
   3. Run the app
     1. Web app:
-      1. npm start
+      1. cmd: npm start
       2. open http://localhost:3000
     2. Desktop app:
-      1. npm run desktop
+      1. cmd: npm run desktop
