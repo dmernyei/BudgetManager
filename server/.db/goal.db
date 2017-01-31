@@ -1,2 +1,0 @@
-{"_id":"0039d1f0-e7f2-11e6-84cc-15551b84c8dc","name":"user2goal1","goalamount":1000,"allocatedamount":0,"deadline":{"$$date":1485893725327},"priority":0,"description":null,"user":"e096e9a0-e7f1-11e6-84cc-15551b84c8dc"}
-{"_id":"0460bf50-e7f2-11e6-84cc-15551b84c8dc","name":"user2goal2","goalamount":1000,"allocatedamount":0,"deadline":{"$$date":1485893732293},"priority":0,"description":null,"user":"e096e9a0-e7f1-11e6-84cc-15551b84c8dc"}
