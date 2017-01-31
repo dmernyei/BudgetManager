@@ -42,6 +42,17 @@
     width: 10%;
 }
 
+.dashboardInfoHolder {
+    margin-top: 20px;
+}
+
+.goalInfoHolder {
+    float: right;
+    width: 80%;
+    padding-top: 10px;
+    padding-left: 20px;
+}
+
 .emptyLabelHolder {
     text-align: center;
     padding-top: 50px;
@@ -176,7 +187,7 @@ h3 {
     margin-left: 12px;
 }
 
-h4, .p-listItemPriority {
+h4, .p-listItemPriority, .p-goalInfo {
     margin: 0px;
 }
 
