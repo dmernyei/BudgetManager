@@ -1,4 +1,4 @@
-# BudgetManager
+# BudgetManager #
 BudgetManager is a University project developed with MobX-React. This app helps you manage your financial life.
 
 List of features:
@@ -6,12 +6,12 @@ List of features:
 * Define your financial goals and keep track of your progress. You can alloacte any amounts of money to your goals from your liquid balance.
 * Log your transactions to see your past income and expenses in one place.
 
-How to install:
+### How to install: ###
   1. Download ZIP, unpack
   2. Open root folder
   3. cmd: npm install
 
-How to run:
+### How to run: ###
   1. Open root folder
   2. cmd: npm run server (server will listen at http://localhost:4000)
   3. Run the app
